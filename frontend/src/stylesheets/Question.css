@@ -8,6 +8,14 @@
   flex-shrink: 2;
 }
 
+.categories-list > ul > li {
+  cursor: pointer;
+}
+
+.categories-list > ul > li.active {
+  color: #3edbdb;
+}
+
 .categories-list > form {
   width: 60%;
 }
@@ -17,11 +25,17 @@
   text-align: center;
 }
 
+.questions-list .show-answer.button {
+  border-radius: 2px;
+  cursor: pointer;
+}
+
 .Question-holder {
   padding: 10px 20px;
-  border: 2px black solid;
+  border: 2px #add solid;
   text-align: left;
   margin: 7px;
+  border-radius: 5px;
 }
 
 .Question-status {
@@ -51,6 +65,13 @@
   color: white;
   padding: 3px 5px;
   margin-left: 0px !important;
+}
+
+.categories-list .button {
+  outline: none;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
 }
 
 span.page-num {

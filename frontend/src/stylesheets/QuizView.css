@@ -16,7 +16,8 @@
 }
 
 .play-category:hover {
-    color: dodgerblue;
+  color: dodgerblue;
+  cursor: pointer;
 }
 
 .button {
@@ -26,6 +27,10 @@
     color: white;
     padding: 3px 5px;
     align-self: center;
+    outline: none;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
 }
 
 div.button {
