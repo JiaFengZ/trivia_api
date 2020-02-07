@@ -31,7 +31,7 @@ def create_app(test_config=None):
   '''
   GET requests for all available categories
   '''
-  @app.route('/categories')
+  @app.route('/categories', methods=['GET'])
   def get_categories():
     data = Category.query.order_by(Category.id).all()
     categories = [categorie.format() for categorie in data]
@@ -87,7 +87,7 @@ def create_app(test_config=None):
         'total_questions': len(Question.query.all())
       })
 
-    except:
+    except Exception:
       abort(422)
 
   '''
@@ -101,6 +101,9 @@ def create_app(test_config=None):
     new_answer = body.get('answer', None)
     new_difficulty = body.get('difficulty', None)
     new_category = body.get('category', None)
+
+    if new_question is None:
+      abort(422)
 
     try:
       question = Question(
@@ -121,7 +124,7 @@ def create_app(test_config=None):
         'total_questions': len(Question.query.all())
       })
 
-    except:
+    except Exception:
       abort(422)
 
   '''
@@ -170,11 +173,14 @@ def create_app(test_config=None):
   '''
   @app.route('/quizzes', methods=['POST'])
   def get_quiz_questions():
+    quiz_category = {}
+    previous_questions = []
     params = request.get_json()
-    quiz_category = params.get('quiz_category', None)
-    previous_questions = params.get('previous_questions', [])
+    if (params != None):
+      quiz_category = params.get('quiz_category', {})
+      previous_questions = params.get('previous_questions', [])
     selection = Question.query.filter(
-      or_(quiz_category==None, Question.category==quiz_category['id']),
+      is_valid_category(quiz_category, Question.category),
       or_(len(previous_questions)==0, is_new_question(Question.id, previous_questions))
     ).all()
 
@@ -191,6 +197,12 @@ def create_app(test_config=None):
       'success': True,
       'question': question
     })
+
+  def is_valid_category(quiz_category, categoryId):
+    if (len(quiz_category.keys()) == 0):
+      return True
+    else:
+      return categoryId == quiz_category['id']
 
   def is_new_question(id, previous_questions):
     for question in previous_questions:
@@ -227,7 +239,7 @@ def create_app(test_config=None):
       }), 400
       
   @app.errorhandler(405)
-  def not_found(error):
+  def not_allowed(error):
     return jsonify({
       "success": False, 
       "error": 405,
